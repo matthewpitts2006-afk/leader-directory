@@ -1,0 +1,8 @@
+# Seed data and anything with leader names stays out of the public repo.
+Data/
+data/
+supabase/seed.sql
+BUILD_BRIEF.md
+
+.DS_Store
+.claude/
