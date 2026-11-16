@@ -19,14 +19,34 @@ export const ASSIGNMENTS = [
   'High School Team', 'All Schools', 'Small Group', 'Weds Hang Out', 'Thurs Hang Out', 'TBD',
 ];
 
-export const VISIT_TYPES = ['Club', 'Lunch Room Visit'];
+// Sites an event can happen at: the nine schools plus the groups that are not tied to one school.
+export const GROUPS = ['High School Team', 'Small Group', 'Weds Hang Out', 'Thurs Hang Out'];
+export const SITES = [...SCHOOL_NAMES, ...GROUPS];
+// Teams that keep weekly availability. "All Schools" leaders count as part of every team.
+export const TEAMS = ASSIGNMENTS.filter((a) => a !== 'All Schools' && a !== 'TBD');
+
+export const VISIT_TYPES = ['Club', 'Lunch Room Visit', 'Cookie Run', 'Hang Out', 'Small Group', 'Other'];
 export const EVENT_CATEGORIES = ['No School', 'Half Day / Early Release', 'E-Learning Day', 'Basketball', 'School Calendar'];
 export const CATEGORIES = [...EVENT_CATEGORIES, ...VISIT_TYPES];
 export const BLOCKING = ['No School', 'Half Day / Early Release', 'E-Learning Day'];
 export const CAT_CLASS = {
   'No School': 'nos', 'Half Day / Early Release': 'half', 'E-Learning Day': 'elearn',
   Basketball: 'bball', 'School Calendar': 'cal', Club: 'club', 'Lunch Room Visit': 'lunch',
+  'Cookie Run': 'cookie', 'Hang Out': 'hang', 'Small Group': 'sg', Other: 'other',
 };
+
+export const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Onboarding
+export const STAGES = ['Not Sent', 'Sent App', 'Application Review', 'Background Check', 'Prerequisites', 'Final Decision'];
+export const DEFAULT_THRESHOLDS = {
+  'Not Sent': 3, 'Sent App': 4, 'Application Review': 3, 'Background Check': 5, Prerequisites: 5, 'Final Decision': 3,
+};
+export const YEARS = ['Freshmen', 'Soph', 'Junior', 'Senior'];
+export const HOLDING_LISTS = ['Next Semester', 'Keep in Mind'];
+export const ONBOARDING_TAG = 'Onboarding Team';
+export const DEFAULT_SEMESTER_STARTS = ['01-06', '08-01'];
 // Used when the calendar data has no "last day for students" entry.
 export const LAST_DAY_FALLBACK = { City: '2027-05-26', County: '2027-05-27' };
 export const EVENING_START = 16 * 60;
@@ -66,6 +86,17 @@ export function fmtTime(hhmm) {
   const h = Math.floor(mins / 60);
   return `${((h + 11) % 12) + 1}:${String(mins % 60).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
 }
+
+// Minutes after midnight -> "11:15 AM", and -> "11:15" for <input type="time">.
+export const fmtMins = (mins) => fmtTime(`${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, '0')}`);
+export const minsToInput = (mins) => `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+// A timestamp from the database as a local YYYY-MM-DD, and whole days from it until today.
+export const localDay = (ts) => {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+export const dayDiff = (fromIso, toIsoDay) => Math.round((toDate(toIsoDay) - toDate(fromIso)) / 86400000);
+export const daysSince = (ts) => (ts ? Math.max(0, dayDiff(localDay(ts), todayIso())) : 0);
 
 export function weeklyDates(start, until) {
   const out = [];
